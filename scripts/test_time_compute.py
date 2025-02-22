@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import logging
+import os
 
 import torch
 from vllm import LLM
@@ -24,6 +25,12 @@ from sal.search import beam_search, best_of_n, dvts
 from sal.utils.data import get_dataset, save_dataset
 from sal.utils.parser import H4ArgumentParser
 from sal.utils.score import score
+
+from huggingface_hub import login
+
+# Replace with your Hugging Face token
+login(os.getenv("HF_KEY"))
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -51,6 +58,14 @@ def main():
         enable_prefix_caching=True,
         seed=config.seed,
         tensor_parallel_size=num_gpus,
+        dtype="half",
+        # trust_remote_code=True,  # Trust the remote model code
+        # quantization="bitsandbytes",  # Apply BitsAndBytes quantization
+        # load_format="bitsandbytes",  # Load in BitsAndBytes format
+        # max_model_len = 2048,
+        # max_num_seqs = 2,
+        # enforce_eager=True,
+        # max_num_batched_tokens=512,
     )
     prm = load_prm(config)
 
